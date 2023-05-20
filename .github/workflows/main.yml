@@ -21,7 +21,7 @@ jobs:
         run: |
           export DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }} # Replace with your Databricks workspace hostname
           export DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}
-          databricks jobs create --json "$(cat job_payload.json)" --python-version 3
+          databricks jobs create --json "$(cat job_payload.json)" 
 
       - name: Run unit tests in Databricks
         run: |
