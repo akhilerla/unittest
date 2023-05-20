@@ -1,4 +1,4 @@
-name: Run Unit Tests in Databricks
+name: Run Spark Unit Tests
 
 on:
   push:
@@ -9,6 +9,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,19 +21,16 @@ jobs:
         run: |
           pip install databricks-cli
 
-      - name: Copy job_payload.json
+      - name: Copy test files
         run: |
-          cp job_payload.json .github/workflows/job_payload.json
+          cp main.py $GITHUB_WORKSPACE/main.py
+          cp test_main.py $GITHUB_WORKSPACE/test_main.py
 
       - name: Create Databricks job
         run: |
-          export DATABRICKS_HOST=$DATABRICKS_HOST
-          export DATABRICKS_TOKEN=${{ secrets.DATABRICKS_HOST }}
           databricks jobs create --json "$(cat .github/workflows/job_payload.json)"
 
       - name: Run unit tests in Databricks
         run: |
-          export DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}
-          export DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}
           job_id=$(databricks jobs list --output JSON | jq -r '.jobs[] | select(.settings.name=="Unit Tests Job") | .job_id')
           databricks jobs run-now --job-id $job_id
