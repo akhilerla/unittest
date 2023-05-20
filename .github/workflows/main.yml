@@ -1,25 +1,50 @@
-name: Run Spark Unit Tests
-
+name: CICD
 on:
   push:
-    branches:
-      - main
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    paths-ignore:
+      - README.md
+      - LICENSE
+      - images
+      - terraform
+      - azure-pipeline.yml
       
+env:
+  DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+  DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+  REPO_DIRECTORY: ${{ vars.REPO_DIRECTORY }}
+  CLUSTER_ID: ${{ vars.CLUSTER_ID }}
 
+permissions:
+  checks: write
+jobs:
+  OnPush:
+    if: github.ref_name == 'dev'
+    environment: dev
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repo
+      uses: actions/checkout@v3
+      
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+      
+    - name: Install libraries
+      run: |
+        pip install --upgrade pip nutter
+    - name: install-databricks-cli
+      uses: microsoft/install-databricks-cli@v1.0.0
 
-      - name: Set up Databricks CLI
-        run: |
-          pip install databricks-cli
-
-
+    - name: Update databricks repo
+      run: |
+        databricks repos update --path $REPO_DIRECTORY --branch "${{github.ref_name}}"
+        
+    - name: Run Unit Tests
+      run: |
+          python -m unittest discover -s ${{ secrets.REPO_DIRECTORY }} -p 'test.py'
+        
+   
+    
+   
+        
