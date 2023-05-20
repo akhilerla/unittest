@@ -18,7 +18,7 @@ permissions:
   checks: write
 jobs:
   OnPush:
-    if: github.ref_name == 'dev'
+    if: github.ref_name == 'main'
     environment: dev
     runs-on: ubuntu-latest
     steps:
