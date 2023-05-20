@@ -38,7 +38,7 @@ jobs:
         
     - name: Run Unit Tests
       run: |
-          python -m unittest discover -s ${{ secrets.REPO_DIRECTORY }} -p 'test.py'
+          python -m unittest discover -s '/Repos/aerla@ilstu.edu/unittest' -p 'test.py'
         
    
     
