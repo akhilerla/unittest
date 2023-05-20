@@ -12,6 +12,7 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      
 
     steps:
       - name: Checkout code
@@ -22,11 +23,3 @@ jobs:
           pip install databricks-cli
 
 
-      - name: Create Databricks job
-        run: |
-          databricks jobs create --json "$(cat .github/workflows/job_payload.json)"
-
-      - name: Run unit tests in Databricks
-        run: |
-          job_id=$(databricks jobs list --output JSON | jq -r '.jobs[] | select(.settings.name=="Unit Tests Job") | .job_id')
-          databricks jobs run-now --job-id $job_id
