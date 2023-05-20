@@ -2,6 +2,7 @@ import unittest
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from pyspark.sql.functions import col
+from code import *
 
 class SparkUnitTest(unittest.TestCase):
     @classmethod
