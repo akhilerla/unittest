@@ -23,8 +23,8 @@ jobs:
 
       - name: Copy test files
         run: |
-          cp main.py $GITHUB_WORKSPACE/main.py
-          cp test_main.py $GITHUB_WORKSPACE/test_main.py
+          cp main.py $GITHUB_WORKSPACE/code.py
+          cp test_main.py $GITHUB_WORKSPACE/test.py
 
       - name: Create Databricks job
         run: |
