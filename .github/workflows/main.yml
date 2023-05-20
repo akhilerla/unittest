@@ -9,10 +9,10 @@ on:
       - azure-pipeline.yml
       
 env:
-  DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
   DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
-  REPO_DIRECTORY: ${{ vars.REPO_DIRECTORY }}
-  CLUSTER_ID: ${{ vars.CLUSTER_ID }}
+  REPO_DIRECTORY: ${{ secrets.REPO_DIRECTORY }}
+  CLUSTER_ID: ${{ secrets.CLUSTER_ID }}
 
 permissions:
   checks: write
