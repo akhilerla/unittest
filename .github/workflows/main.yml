@@ -21,10 +21,6 @@ jobs:
         run: |
           pip install databricks-cli
 
-      - name: Copy test files
-        run: |
-          cp code.py $GITHUB_WORKSPACE/code.py
-          cp test.py $GITHUB_WORKSPACE/test.py
 
       - name: Create Databricks job
         run: |
