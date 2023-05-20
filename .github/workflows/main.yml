@@ -14,11 +14,18 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Databricks CLI
-        uses: databrickslabs/github-actions/setup-databricks-cli@v0.3.1
-        with:
-          token: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          pip install databricks-cli
+
+      - name: Create Databricks job
+        run: |
+          export DATABRICKS_HOST=<databricks-host>  # Replace with your Databricks workspace hostname
+          export DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}
+          databricks jobs create --json "$(cat job_payload.json)" --python-version 3
 
       - name: Run unit tests in Databricks
         run: |
-          databricks jobs create --json "$(cat job_payload.json)" --python-version 3
-          databricks jobs run-now --job-id <job-id>  # Replace with your Databricks job ID
+          export DATABRICKS_HOST=<databricks-host>  # Replace with your Databricks workspace hostname
+          export DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}
+          job_id=$(databricks jobs list --output JSON | jq -r '.jobs[] | select(.settings.name=="Unit Tests Job") | .job_id')
+          databricks jobs run-now --job-id $job_id
