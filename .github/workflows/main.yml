@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Run Unit Tests in Databricks
 
 on:
   push:
@@ -13,10 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Databricks CLI
+        uses: databrickslabs/github-actions/setup-databricks-cli@v0.3.1
         with:
-          python-version: '3.x'  # Replace with your desired Python version
+          token: ${{ secrets.DATABRICKS_TOKEN }}
 
-      - name: Run unit tests
-        run: python -m unittest discover  # Replace with the command to run your unit tests
+      - name: Run unit tests in Databricks
+        run: |
+          databricks jobs create --json "$(cat job_payload.json)" --python-version 3
+          databricks jobs run-now --job-id <job-id>  # Replace with your Databricks job ID
