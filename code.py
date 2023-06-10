@@ -9,7 +9,7 @@ schema = StructType([
     StructField("age", IntegerType(), True),
     StructField("city", StringType(), True)
 ])
-
+#comment
 # Create the DataFrame
 data = [("John", 25, "New York"),
         ("Alice", 30, "San Francisco"),
