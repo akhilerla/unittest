@@ -25,8 +25,8 @@ jobs:
 
     - name: Prepare temporary directory
       run: |
-        mkdir -p tempdir && rm -rf tempdir/*  # Ensure tempdir exists and is empty
-        rsync -av --progress . tempdir --exclude .git  # Exclude .git directory
+        mkdir -p $RUNNER_TEMP/tempdir && rm -rf $RUNNER_TEMP/tempdir/*  # Ensure tempdir exists and is empty
+        rsync -av --progress . $RUNNER_TEMP/tempdir --exclude .git  # Exclude .git directory
 
     - name: Clone Repo into Databricks
       run: |
