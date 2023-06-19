@@ -26,3 +26,17 @@ filtered_df.show()
 
 
 
+
+# COMMAND ----------
+
+df = spark.createDataFrame(data, schema)
+
+# Filter the DataFrame
+filtered_df = df.filter(col("age") >= 18)
+
+# Show the filtered DataFrame
+filtered_df.show()
+
+# COMMAND ----------
+
+#test2
