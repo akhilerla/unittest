@@ -1,46 +1,34 @@
-name: CICD
+name: Clone Repo into Databricks
+
 on:
   push:
-    paths-ignore:
-      - README.md
-      - LICENSE
-      - images
-      - terraform
-      - azure-pipeline.yml
-      
-env:
-  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-  DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
-  REPO_DIRECTORY: ${{ secrets.REPO_DIRECTORY }}
-  CLUSTER_ID: ${{ secrets.CLUSTER_ID }}
+    branches:
+      - main  # Triggers the workflow on push or pull request events but only for the main branch
 
-permissions:
-  checks: write
 jobs:
-  OnPush:
-    if: github.ref_name == 'main'
-    environment: dev
+  build:
+
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
-      
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.8
-      
-    - name: Install libraries
+        python-version: '3.x'
+
+    - name: Install Databricks CLI
       run: |
-        pip install --upgrade pip nutter
-    - name: install-databricks-cli
-      uses: microsoft/install-databricks-cli@v1.0.0
-        
-    - name: Run Unit Tests
+        pip install databricks-cli
+
+    - name: Prepare temporary directory
       run: |
-          python -m unittest discover -s '/Repos/aerla@ilstu.edu/unittest' -p 'test.py'
-        
-   
-    
-   
-        
+        mkdir -p tempdir && rm -rf tempdir/*  # Ensure tempdir exists and is empty
+        rsync -av --progress . tempdir --exclude .git  # Exclude .git directory
+
+    - name: Clone Repo into Databricks
+      run: |
+        echo ${{ secrets.DATABRICKS_TOKEN }} | databricks configure --token --host ${{ secrets.DATABRICKS_HOST }}
+        databricks workspace import_dir tempdir /dev/  # Replace with your desired directory path
