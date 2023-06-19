@@ -31,7 +31,6 @@ jobs:
     - name: Clone Repo into Databricks
       env:
         DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       run: |
-        databricks configure --token --host ${{ secrets.DATABRICKS_HOST }}
-        databricks workspace rm /Users/myuser/mydir --recursive  # Delete existing directory
-        databricks workspace import_dir $RUNNER_TEMP/tempdir /dev/  # Replace with your desired directory path
+        databricks workspace import_dir --overwrite $RUNNER_TEMP/tempdir /dev/  # Replace with your desired directory path
