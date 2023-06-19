@@ -31,4 +31,4 @@ jobs:
     - name: Clone Repo into Databricks
       run: |
         echo ${{ secrets.DATABRICKS_TOKEN }} | databricks configure --token --host ${{ secrets.DATABRICKS_HOST }}
-        databricks workspace import_dir --overwrite tempdir /dev/  # Replace with your desired directory path
+        databricks workspace import_dir --overwrite $RUNNER_TEMP/tempdir /dev/  # Replace with your desired directory path
