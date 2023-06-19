@@ -29,6 +29,9 @@ jobs:
         rsync -av --progress . $RUNNER_TEMP/tempdir --exclude .git  # Exclude .git directory
 
     - name: Clone Repo into Databricks
+      env:
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       run: |
-        echo ${{ secrets.DATABRICKS_TOKEN }} | databricks configure --token --host ${{ secrets.DATABRICKS_HOST }}
-        databricks workspace import_dir --overwrite $RUNNER_TEMP/tempdir /dev/  # Replace with your desired directory path
+        databricks configure --token --host ${{ secrets.DATABRICKS_HOST }}
+        databricks workspace rm /Users/myuser/mydir --recursive  # Delete existing directory
+        databricks workspace import_dir $RUNNER_TEMP/tempdir /dev/  # Replace with your desired directory path
